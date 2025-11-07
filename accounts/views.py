@@ -48,7 +48,7 @@ def collect_info_view(request):
         # chuyen sang trang hien thi thong tin
         return redirect('profile_detail')
     
-    return render(request, 'registration/collect_data.html')
+    return render(request, 'registration/signup.html')
 
 @login_required
 def profile_detail_view(request):
@@ -69,7 +69,7 @@ def profile_detail_view(request):
     'additional_info': additional_info,
     }
 
-    return render(request, 'registration/profile_detail.html', context)
+    return render(request, 'registration/profile_detail.html    ', context)
 
 @login_required
 # User hien tai
