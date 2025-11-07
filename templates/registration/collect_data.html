@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile</title>
+</head>
+<body>
+    <h2>We will need some information from you!</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <h3>Personal Information</h3>
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" placeholder="Nguyen Van"><br><br>
+        
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" placeholder="A"><br><br>
+        
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" placeholder="18"><br><br>
+        
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" placeholder="Vietnam"><br><br>
+        
+        <h3>Food Preferences</h3>
+        <label for="taste">Food Taste:</label>
+        <textarea id="taste" name="taste" rows="3" placeholder="Spicy, sweet, sour..."></textarea><br><br>
+        
+        <label for="allergy">Food Allergies:</label>
+        <textarea id="allergy" name="allergy" rows="3" placeholder="Peanuts, seafood, dairy..."></textarea><br><br>
+        
+        <label for="pathology">Medical Conditions:</label>
+        <textarea id="pathology" name="pathology" rows="3" placeholder="Diabetes, high blood pressure..."></textarea><br><br>
+        
+        <button type="submit">Complete</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomnomly - Home</title>
+</head>
+<body>
+    <h1>Welcome to Nomnomly!</h1>
+    
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p>
+        <nav>
+            <ul>
+                <li><a href="{% url 'profile_detail' %}">Your Profile</a></li>
+                <li><a href="#">Explore Foods</a></li>
+                <li><a href="#">Recommendations</a></li>
+            </ul>
+        </nav>
+        
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <p>Please login or sign up</p>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+</body>
+</html>

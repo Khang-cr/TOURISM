@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Details</title>
+</head>
+<body>
+    <h2>Profile Information for {{ user.username }}</h2>
+    
+    <h3>Account Information</h3>
+    <p><strong>Username:</strong> {{ username }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>First Name:</strong> {{ additional_info.first_name }}</p>
+    <p><strong>Last Name:</strong> {{ additional_info.last_name }}</p>
+    <p><strong>Date Joined:</strong> {{ date_joined }}</p>
+    
+    {% if additional_info %}
+    <h3>Personal Information</h3>
+    <p><strong>Age:</strong> {{ additional_info.age }}</p>
+    <p><strong>Country:</strong> {{ additional_info.country }}</p>
+    
+    <h3>Food Preferences</h3>
+    <p><strong>Food Taste:</strong> {{ additional_info.taste }}</p>
+    <p><strong>Food Allergies:</strong> {{ additional_info.allergy }}</p>
+    <p><strong>Medical Conditions:</strong> {{ additional_info.pathology }}</p>
+    {% else %}
+    <p><em>No additional information available.</em></p>
+    {% endif %}
+        
+    <br>
+    <a href="{% url 'homepage' %}">
+        <button type="button">Homepage</button>
+    </a>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Log out</button>
+    </form>
+</body>
+</html>
