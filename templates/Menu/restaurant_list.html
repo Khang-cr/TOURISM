@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .restaurant-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .restaurant-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .restaurant-item:last-child {
+            border-bottom: none;
+        }
+
+        .restaurant-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .restaurant-info {
+            flex: 1;
+        }
+
+        .restaurant-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .restaurant-address, .restaurant-phone {
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .restaurant-phone {
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-message i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .navigation {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #3498db;
+            border: 1px solid #3498db;
+        }
+
+        .btn-outline:hover {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .restaurant-item {
+                padding: 12px 0;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+            
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>
+            {% if all_restaurants %}
+                All Restaurants
+            {% else %}
+                Restaurants Serving: {{ dish.dish_name }}
+            {% endif %}
+        </h1>
+
+        <ul class="restaurant-list">
+            {% for r in restaurants %}
+                <li class="restaurant-item">
+                    <div class="restaurant-info">
+                        <div class="restaurant-name">{{ r.res_name }}</div>
+                        <div class="restaurant-address">{{ r.address }}</div>
+                        <div class="restaurant-phone">{{ r.phone }}</div>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="empty-message">
+                    <i class="fas fa-store-slash"></i>
+                    <h3>No Restaurants Found</h3>
+                    <p>
+                        {% if all_restaurants %}
+                            There are no restaurants in our database.
+                        {% else %}
+                            No restaurants are currently serving this dish.
+                        {% endif %}
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="navigation">
+            <a href="/dishes/" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Dishes
+            </a>
+            {% if not all_restaurants %}
+                <a href="/restaurants/" class="btn">
+                    View All Restaurants
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

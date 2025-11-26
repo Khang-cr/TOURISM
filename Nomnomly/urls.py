@@ -23,4 +23,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # login, logout, password reset
     path('', TemplateView.as_view(template_name='homepage.html'), name='homepage'),
+    path('', include('Menu.urls')),
 ]

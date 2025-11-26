@@ -17,7 +17,14 @@
                 <li><a href="#">Recommendations</a></li>
             </ul>
         </nav>
-        
+        <nav>
+            <ul>
+                <li><a href="{% url 'profile_detail' %}">Your Profile</a></li>
+                <li><a href="{% url 'dish_list' %}">Explore Foods (Danh sách món)</a></li>    <!-- added -->
+                <li><a href="{% url 'restaurant_by_dish' %}">All Restaurants (Tất cả quán ăn)</a></li> <!-- added -->
+                <li><a href="#">Recommendations</a></li>
+            </ul>
+        </nav>
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit">Logout</button>

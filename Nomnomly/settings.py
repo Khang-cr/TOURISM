@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',      # DISPLAYING ONE TIME NOTIFICATIONS TO USERS
     'django.contrib.staticfiles',   # SERVING STATIC FILE (IMAGE, CSS)
     'accounts',
+    'Menu',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +77,7 @@ WSGI_APPLICATION = 'Nomnomly.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'data.sqlite',
     }
 }
 
