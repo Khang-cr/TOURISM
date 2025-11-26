@@ -11,19 +11,19 @@
     <h3>Account Information</h3>
     <p><strong>Username:</strong> {{ username }}</p>
     <p><strong>Email:</strong> {{ email }}</p>
-    <p><strong>First Name:</strong> {{ additional_info.first_name }}</p>
-    <p><strong>Last Name:</strong> {{ additional_info.last_name }}</p>
+    <p><strong>First Name:</strong> {{ profile.first_name }}</p>
+    <p><strong>Last Name:</strong> {{ profile.last_name }}</p>
     <p><strong>Date Joined:</strong> {{ date_joined }}</p>
     
-    {% if additional_info %}
+    {% if profile %}
     <h3>Personal Information</h3>
-    <p><strong>Age:</strong> {{ additional_info.age }}</p>
-    <p><strong>Country:</strong> {{ additional_info.country }}</p>
+    <p><strong>Age:</strong> {{ profile.age }}</p>
+    <p><strong>Country:</strong> {{ profile.country }}</p>
     
     <h3>Food Preferences</h3>
-    <p><strong>Food Taste:</strong> {{ additional_info.taste }}</p>
-    <p><strong>Food Allergies:</strong> {{ additional_info.allergy }}</p>
-    <p><strong>Medical Conditions:</strong> {{ additional_info.pathology }}</p>
+    <p><strong>Food Taste:</strong> {{ profile.taste }}</p>
+    <p><strong>Food Allergies:</strong> {{ profile.allergy }}</p>
+    <p><strong>Medical Conditions:</strong> {{ profile.pathology }}</p>
     {% else %}
     <p><em>No additional information available.</em></p>
     {% endif %}

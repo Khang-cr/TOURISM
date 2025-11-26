@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth import login
-import csv
-import os
+from .models import UserProfile
+
 # Define view functions | request -> reponse | view = request handler
 
 # Dùng class-based view có sẵn để làm sign up vì nó sẽ tự xử lý việc tạo user và validate form
@@ -33,43 +33,48 @@ def collect_info_view(request):
         taste = request.POST.get('taste', '')
         allergy = request.POST.get('allergy', '')
         pathology = request.POST.get('pathology', '')
-        # Lưu vào CSV
+        
+        # Lưu vào database
         user = request.user
-        save_to_csv(user, {
-            'first_name': first_name,
-            'last_name': last_name,
-            'age': age,
-            'country': country,
-            'taste': taste,
-            'allergy': allergy,
-            'pathology': pathology,
-        })
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+        
+        # Tạo hoặc cập nhật UserProfile
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        profile.age = age
+        profile.country = country
+        profile.taste = taste
+        profile.allergy = allergy
+        profile.pathology = pathology
+        profile.save()
         
         # chuyen sang trang hien thi thong tin
         return redirect('profile_detail')
     
-    return render(request, 'registration/signup.html')
+    return render(request, 'registration/collect_data.html')
 
 @login_required
 def profile_detail_view(request):
     user = request.user
-
-    additional_info = read_user_from_csv(user.username)
-
-    first_name = additional_info.get('first_name', user.first_name) if additional_info else user.first_name
-    last_name = additional_info.get('last_name', user.last_name) if additional_info else user.last_name
+    
+    # Lấy thông tin từ database
+    try:
+        profile = user.profile
+    except UserProfile.DoesNotExist:
+        profile = None
 
     context = {
-    'user': user,
-    'username': user.username,
-    'email': user.email,
-    'first_name': user.first_name,
-    'last_name': user.last_name,
-    'date_joined': user.date_joined,
-    'additional_info': additional_info,
+        'user': user,
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'date_joined': user.date_joined,
+        'profile': profile,
     }
 
-    return render(request, 'registration/profile_detail.html    ', context)
+    return render(request, 'registration/profile_detail.html', context)
 
 @login_required
 # User hien tai
@@ -102,71 +107,4 @@ def user_list_view(request):
     specific_user = User.objects.get(username='tên_user')
     
     return render(request, 'user_list.html', {'users': all_users})
-
-def save_to_csv(user, additional_info):
-    csv_file = os.path.join(settings.BASE_DIR, 'user_data.csv')
-    
-    file_exists = os.path.isfile(csv_file)
-    
-    # Đọc dữ liệu hiện tại
-    existing_data = []
-    user_exists = False
-    
-    if file_exists:
-        with open(csv_file, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                if row['username'] == user.username:
-                    # Cập nhật dữ liệu user hiện tại
-                    user_exists = True
-                    row.update({
-                        'email': user.email,
-                        'first_name': additional_info.get('first_name', ''),
-                        'last_name': additional_info.get('last_name', ''),
-                        'date_joined': user.date_joined.strftime('%Y-%m-%d %H:%M:%S'),
-                        'age': additional_info.get('age', ''),
-                        'country': additional_info.get('country', ''),
-                        'taste': additional_info.get('taste', ''),
-                        'allergy': additional_info.get('allergy', ''),
-                        'pathology': additional_info.get('pathology', ''),
-                    })
-                existing_data.append(row)
-    
-    # Nếu user chưa tồn tại, thêm mới
-    if not user_exists:
-        existing_data.append({
-            'username': user.username,
-            'email': user.email,
-            'first_name': additional_info.get('first_name', ''),
-            'last_name': additional_info.get('last_name', ''),
-            'date_joined': user.date_joined.strftime('%Y-%m-%d %H:%M:%S'),
-            'age': additional_info.get('age', ''),
-            'country': additional_info.get('country', ''),
-            'taste': additional_info.get('taste', ''),
-            'allergy': additional_info.get('allergy', ''),
-            'pathology': additional_info.get('pathology', ''),
-        })
-    
-    # Ghi lại toàn bộ dữ liệu
-    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
-        fieldnames = ['username', 'email', 'first_name', 'last_name', 'date_joined',
-                     'age', 'country', 'taste', 'allergy', 'pathology']
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(existing_data)
-
-# Doc thong tin
-def read_user_from_csv(username): 
-    csv_file = os.path.join(settings.BASE_DIR, 'user_data.csv')
-    
-    if not os.path.isfile(csv_file):
-        return {}
-    
-    with open(csv_file, 'r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if row['username'] == username:
-                return row
-    
-    return {}
 
