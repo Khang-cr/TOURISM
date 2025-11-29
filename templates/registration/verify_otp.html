@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Nomnomly</title>
+</head>
+<body>
+    <h1>Verify OTP</h1>
+    <p>OTP has been sent to: <strong>{{ email }}</strong></p>
+    <p>Please check your email and enter the 6-digit code below.</p>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <p {% if message.tags == 'error' %}style="color: red;"{% else %}style="color: green;"{% endif %}>
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <label for="otp">Enter OTP:</label><br>
+        <input type="text" id="otp" name="otp" maxlength="6" pattern="[0-9]{6}" required><br><br>
+        <button type="submit">Verify</button>
+    </form>
+    
+    <br>
+    <a href="{% url 'forgot_password' %}">Resend OTP</a>
+</body>
+</html>

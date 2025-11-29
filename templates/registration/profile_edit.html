@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <style>
+        .checkbox-group {
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Edit Your Profile</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <h3>Account Information</h3>
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+        <br><br>
+        
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+        <br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+        <br><br>
+        
+        <h3>Personal Information</h3>
+        <label for="date_of_birth">Date of Birth:</label>
+        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ profile.date_of_birth|date:'Y-m-d' }}" required>
+        <br><br>
+        
+        <label for="language">Preferred Language:</label>
+        <select id="language" name="language" required>
+            <option value="">-- Select Language --</option>
+            <option value="English" {% if profile.language == "English" %}selected{% endif %}>English</option>
+            <option value="Vietnamese" {% if profile.language == "Vietnamese" %}selected{% endif %}>Vietnamese</option>
+            <option value="Chinese" {% if profile.language == "Chinese" %}selected{% endif %}>Chinese</option>
+            <option value="Japanese" {% if profile.language == "Japanese" %}selected{% endif %}>Japanese</option>
+            <option value="Korean" {% if profile.language == "Korean" %}selected{% endif %}>Korean</option>
+            <option value="French" {% if profile.language == "French" %}selected{% endif %}>French</option>
+            <option value="Spanish" {% if profile.language == "Spanish" %}selected{% endif %}>Spanish</option>
+            <option value="Other" {% if profile.language == "Other" %}selected{% endif %}>Other</option>
+        </select>
+        <br><br>
+        
+        <h3>Food Preferences</h3>
+        <label>Food Taste Preferences:</label>
+        <div class="checkbox-group">
+            {% for taste in taste_choices %}
+            <label>
+                <input type="checkbox" name="taste" value="{{ taste }}" 
+                    {% if taste in selected_tastes %}checked{% endif %}>
+                {{ taste|title }}
+            </label>
+            {% endfor %}
+        </div>
+        <br>
+        
+        <label>Food Allergies:</label>
+        <div class="checkbox-group">
+            {% for allergy in allergy_choices %}
+            <label>
+                <input type="checkbox" name="allergy" value="{{ allergy }}"
+                    {% if allergy in selected_allergies %}checked{% endif %}>
+                {{ allergy|title }}
+            </label>
+            {% endfor %}
+        </div>
+        <br>
+        
+        <label>Medical Conditions:</label>
+        <div class="checkbox-group">
+            {% for pathology in pathology_choices %}
+            <label>
+                <input type="checkbox" name="pathology" value="{{ pathology }}"
+                    {% if pathology in selected_pathologies %}checked{% endif %}>
+                {{ pathology|title }}
+            </label>
+            {% endfor %}
+        </div>
+        <br>
+        
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'profile_detail' %}">
+            <button type="button">Cancel</button>
+        </a>
+    </form>
+</body>
+</html>

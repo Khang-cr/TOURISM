@@ -11,14 +11,15 @@
     <h3>Account Information</h3>
     <p><strong>Username:</strong> {{ username }}</p>
     <p><strong>Email:</strong> {{ email }}</p>
-    <p><strong>First Name:</strong> {{ profile.first_name }}</p>
-    <p><strong>Last Name:</strong> {{ profile.last_name }}</p>
+    <p><strong>First Name:</strong> {{ first_name }}</p>
+    <p><strong>Last Name:</strong> {{ last_name }}</p>
     <p><strong>Date Joined:</strong> {{ date_joined }}</p>
     
     {% if profile %}
     <h3>Personal Information</h3>
-    <p><strong>Age:</strong> {{ profile.age }}</p>
-    <p><strong>Country:</strong> {{ profile.country }}</p>
+    <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F j, Y" }}</p>
+    <p><strong>Age:</strong> {{ profile.age }} years old</p>
+    <p><strong>Preferred Language:</strong> {{ profile.language }}</p>
     
     <h3>Food Preferences</h3>
     <p><strong>Food Taste:</strong> {{ profile.taste }}</p>
@@ -29,10 +30,13 @@
     {% endif %}
         
     <br>
+    <a href="{% url 'profile_edit' %}">
+        <button type="button">Edit Profile</button>
+    </a>
     <a href="{% url 'homepage' %}">
         <button type="button">Homepage</button>
     </a>
-    <form method="post" action="{% url 'logout' %}">
+    <form method="post" action="{% url 'logout' %}" style="display: inline;">
         {% csrf_token %}
         <button type="submit">Log out</button>
     </form>

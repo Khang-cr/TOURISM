@@ -1,7 +1,18 @@
 <h1>Nomnomly</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <p {% if message.tags == 'error' %}style="color: red;"{% else %}style="color: green;"{% endif %}>
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
+
 <form method="post">
 {% csrf_token %}
 {{ form.as_p }}
 <button type="submit">Log In</button>
 </form>
-<a href="{% url 'signup' %}">Sign Up</a>
+
+<a href="{% url 'signup' %}">Sign Up</a> | 
+<a href="{% url 'forgot_password' %}">Forgot Password?</a>

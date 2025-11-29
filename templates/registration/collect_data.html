@@ -3,38 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Profile</title>
+    <title>Collect Information</title>
+    <style>
+        .checkbox-group {
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-    <h2>We will need some information from you!</h2>
-    
+    <h2>Please provide your information</h2>
     <form method="post">
         {% csrf_token %}
         
-        <h3>Personal Information</h3>
         <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" placeholder="Nguyen Van"><br><br>
+        <input type="text" id="first_name" name="first_name" required>
+        <br><br>
         
         <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" placeholder="A"><br><br>
+        <input type="text" id="last_name" name="last_name" required>
+        <br><br>
         
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" placeholder="18"><br><br>
+        <label for="date_of_birth">Date of Birth:</label>
+        <input type="date" id="date_of_birth" name="date_of_birth" required>
+        <br><br>
         
-        <label for="country">Country:</label>
-        <input type="text" id="country" name="country" placeholder="Vietnam"><br><br>
+        <label for="language">Preferred Language:</label>
+        <select id="language" name="language" required>
+            <option value="">-- Select Language --</option>
+            <option value="English">English</option>
+            <option value="Vietnamese">Vietnamese</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Korean">Korean</option>
+            <option value="French">French</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Other">Other</option>
+        </select>
+        <br><br>
         
-        <h3>Food Preferences</h3>
-        <label for="taste">Food Taste:</label>
-        <textarea id="taste" name="taste" rows="3" placeholder="Spicy, sweet, sour..."></textarea><br><br>
+        <label>Food Taste Preferences (select multiple):</label>
+        <div class="checkbox-group">
+            {% for taste in taste_choices %}
+            <label>
+                <input type="checkbox" name="taste" value="{{ taste }}">
+                {{ taste|title }}
+            </label>
+            {% endfor %}
+        </div>
+        <br>
         
-        <label for="allergy">Food Allergies:</label>
-        <textarea id="allergy" name="allergy" rows="3" placeholder="Peanuts, seafood, dairy..."></textarea><br><br>
+        <label>Food Allergies (select multiple):</label>
+        <div class="checkbox-group">
+            {% for allergy in allergy_choices %}
+            <label>
+                <input type="checkbox" name="allergy" value="{{ allergy }}">
+                {{ allergy|title }}
+            </label>
+            {% endfor %}
+        </div>
+        <br>
         
-        <label for="pathology">Medical Conditions:</label>
-        <textarea id="pathology" name="pathology" rows="3" placeholder="Diabetes, high blood pressure..."></textarea><br><br>
+        <label>Medical Conditions (select multiple):</label>
+        <div class="checkbox-group">
+            {% for pathology in pathology_choices %}
+            <label>
+                <input type="checkbox" name="pathology" value="{{ pathology }}">
+                {{ pathology|title }}
+            </label>
+            {% endfor %}
+        </div>
+        <br>
         
-        <button type="submit">Complete</button>
+        <button type="submit">Submit</button>
     </form>
 </body>
 </html>
