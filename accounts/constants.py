@@ -17,11 +17,11 @@ TASTE_CHOICES = [
 ]
 
 ALLERGY_CHOICES = [
-    'peanuts', 'tree nuts', 'milk', 'eggs', 'wheat', 'soy', 
-    'fish', 'shellfish', 'sesame', 'none'
+    'none', 'peanuts', 'tree nuts', 'milk', 'eggs', 'wheat', 'soy', 
+    'fish', 'shellfish', 'sesame'
 ]
 
 PATHOLOGY_CHOICES = [
-    'diabetes', 'high blood pressure', 'heart disease', 'kidney disease',
-    'liver disease', 'high cholesterol', 'gout', 'celiac disease', 'none'
+    'none', 'diabetes', 'high blood pressure', 'heart disease', 'kidney disease',
+    'liver disease', 'high cholesterol', 'gout', 'celiac disease'
 ]

@@ -1,31 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify OTP - Nomnomly</title>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Verify OTP - Nomnomly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#901A1C",
+                        "background-light": "#FFF8F0",
+                        "background-dark": "#221a10",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
 </head>
-<body>
-    <h1>Verify OTP</h1>
-    <p>OTP has been sent to: <strong>{{ email }}</strong></p>
-    <p>Please check your email and enter the 6-digit code below.</p>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap px-4 py-3 sm:px-6 lg:px-10">
+<div class="flex items-center gap-4 text-[#181511] dark:text-white">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_535)">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_535">
+<rect fill="white" height="48" width="48"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] text-[#181511] dark:text-white">Nomnomly</h2>
+</div>
+<div class="flex gap-2">
+<a href="{% url 'login' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Log In</span>
+</a>
+<a href="{% url 'signup' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 text-[#181511] dark:text-white dark:bg-primary/30 text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Sign Up</span>
+</a>
+</div>
+</header>
+<main class="flex flex-1 items-center justify-center p-4">
+<div class="flex w-full max-w-lg flex-col items-center gap-8 rounded-xl bg-white dark:bg-background-dark/50 p-6 sm:p-10 shadow-lg">
+<div class="flex w-full flex-col items-center gap-4 text-center">
+<p class="text-4xl font-black leading-tight tracking-[-0.033em] text-[#181511] dark:text-white">Check your email!</p>
+<p class="max-w-md text-base font-normal leading-normal text-gray-600 dark:text-gray-300 text-center mx-auto">We've sent a 6-digit code to <strong>{{ email }}</strong>. Please enter it below to verify your account.</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-100 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-300">
+            <span class="material-symbols-outlined text-base">error</span>
+            <p class="text-center">{{ message }}</p>
+        </div>
+        {% elif message.tags == 'success' %}
+        <div class="flex w-full items-center justify-center gap-2 rounded-lg bg-green-100 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            <span class="material-symbols-outlined text-base">check_circle</span>
+            <p class="text-center">{{ message }}</p>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<form method="POST" class="w-full flex flex-col items-center gap-6" id="otpForm">
+    {% csrf_token %}
+    <input type="hidden" name="otp" id="hiddenOtp">
+    <div class="w-full">
+        <fieldset class="relative flex justify-center gap-2 sm:gap-4">
+            <input class="otp-input flex h-14 w-12 text-center text-lg font-bold [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none rounded-lg border border-gray-300 dark:border-gray-600 focus:border-primary" maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" />
+            <input class="otp-input flex h-14 w-12 text-center text-lg font-bold [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none rounded-lg border border-gray-300 dark:border-gray-600 focus:border-primary" maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" />
+            <input class="otp-input flex h-14 w-12 text-center text-lg font-bold [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none rounded-lg border border-gray-300 dark:border-gray-600 focus:border-primary" maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" />
+            <input class="otp-input flex h-14 w-12 text-center text-lg font-bold [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none rounded-lg border border-gray-300 dark:border-gray-600 focus:border-primary" maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" />
+            <input class="otp-input flex h-14 w-12 text-center text-lg font-bold [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none rounded-lg border border-gray-300 dark:border-gray-600 focus:border-primary" maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" />
+            <input class="otp-input flex h-14 w-12 text-center text-lg font-bold [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none rounded-lg border border-gray-300 dark:border-gray-600 focus:border-primary" maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" />
+        </fieldset>
+    </div>
+    <div class="flex w-full flex-col items-center gap-4">
+        <button type="submit" class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90">
+            <span class="truncate">Verify</span>
+        </button>
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <span>Code expires in:</span>
+            <span class="font-semibold text-[#181511] dark:text-white" id="timer">05:00</span>
+        </div>
+    </div>
+</form>
+
+<div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+    <span>Didn't receive the code?</span>
+    <a href="{% url 'forgot_password' %}" class="font-semibold text-primary underline hover:text-opacity-80">Resend OTP</a>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+<script>
+    // OTP Input Handler
+    const inputs = document.querySelectorAll('.otp-input');
+    const form = document.getElementById('otpForm');
+    const hiddenOtp = document.getElementById('hiddenOtp');
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').slice(0, 6);
+            pastedData.split('').forEach((char, i) => {
+                if (inputs[i]) inputs[i].value = char;
+            });
+            if (inputs[Math.min(pastedData.length, 5)]) {
+                inputs[Math.min(pastedData.length, 5)].focus();
+            }
+        });
+    });
+
+    form.addEventListener('submit', (e) => {
+        const otpValue = Array.from(inputs).map(input => input.value).join('');
+        hiddenOtp.value = otpValue;
+    });
+
+    // Timer
+    let timeLeft = 300; // 5 minutes
+    const timerElement = document.getElementById('timer');
     
-    {% if messages %}
-        {% for message in messages %}
-            <p {% if message.tags == 'error' %}style="color: red;"{% else %}style="color: green;"{% endif %}>
-                {{ message }}
-            </p>
-        {% endfor %}
-    {% endif %}
-    
-    <form method="post">
-        {% csrf_token %}
-        <label for="otp">Enter OTP:</label><br>
-        <input type="text" id="otp" name="otp" maxlength="6" pattern="[0-9]{6}" required><br><br>
-        <button type="submit">Verify</button>
-    </form>
-    
-    <br>
-    <a href="{% url 'forgot_password' %}">Resend OTP</a>
-</body>
-</html>
+    const countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerElement.textContent = '00:00';
+        }
+    }, 1000);
+
+    // Focus first input on load
+    inputs[0].focus();
+</script>
+</body></html>

@@ -18,11 +18,17 @@ class SignUpView(CreateView):
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         user = form.save()
         login(self.request, user)
-        return response
+        return redirect('collect_data')
+    
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, error)
+        return super().form_invalid(form)
 
+@login_required
 def collect_info_view(request):
     if request.method == 'POST':
         # Lay du lieu
@@ -43,14 +49,14 @@ def collect_info_view(request):
         
         # Tạo hoặc cập nhật UserProfile
         profile, created = UserProfile.objects.get_or_create(user=user)
-        profile.date_of_birth = request.POST.get('date_of_birth', '')
+        profile.date_of_birth = date_of_birth
         profile.language = language
         profile.taste = taste
         profile.allergy = allergy
         profile.pathology = pathology
         profile.save()
         
-        # chuyen sang trang hien thi thong tin
+        messages.success(request, 'Profile information saved successfully!')
         return redirect('profile_detail')
     
     context = {
@@ -65,11 +71,29 @@ def collect_info_view(request):
 def profile_detail_view(request):
     user = request.user
     
-    # Lấy thông tin từ database
     try:
         profile = user.profile
+        
+        if profile.taste:
+            tastes = [t.strip() for t in profile.taste.replace(', ', ',').split(',') if t.strip()]
+        else:
+            tastes = []
+            
+        if profile.allergy:
+            allergies = [a.strip() for a in profile.allergy.replace(', ', ',').split(',') if a.strip()]
+        else:
+            allergies = []
+            
+        if profile.pathology:
+            pathologies = [p.strip() for p in profile.pathology.replace(', ', ',').split(',') if p.strip()]
+        else:
+            pathologies = []
+        
     except UserProfile.DoesNotExist:
         profile = None
+        tastes = []
+        allergies = []
+        pathologies = []
 
     context = {
         'user': user,
@@ -79,6 +103,9 @@ def profile_detail_view(request):
         'last_name': user.last_name,
         'date_joined': user.date_joined,
         'profile': profile,
+        'tastes': tastes,
+        'allergies': allergies,
+        'pathologies': pathologies,
     }
 
     return render(request, 'registration/profile_detail.html', context)
@@ -137,7 +164,23 @@ def profile_edit_view(request):
         profile.pathology = ', '.join(request.POST.getlist('pathology'))
         profile.save()
         
+        messages.success(request, 'Profile updated successfully!')
         return redirect('profile_detail')
+    
+    if profile.taste:
+        selected_tastes = [t.strip() for t in profile.taste.replace(', ', ',').split(',') if t.strip()]
+    else:
+        selected_tastes = []
+        
+    if profile.allergy:
+        selected_allergies = [a.strip() for a in profile.allergy.replace(', ', ',').split(',') if a.strip()]
+    else:
+        selected_allergies = []
+        
+    if profile.pathology:
+        selected_pathologies = [p.strip() for p in profile.pathology.replace(', ', ',').split(',') if p.strip()]
+    else:
+        selected_pathologies = []
     
     context = {
         'user': user,
@@ -145,9 +188,9 @@ def profile_edit_view(request):
         'taste_choices': TASTE_CHOICES,
         'allergy_choices': ALLERGY_CHOICES,
         'pathology_choices': PATHOLOGY_CHOICES,
-        'selected_tastes': profile.taste.split(', ') if profile.taste else [],
-        'selected_allergies': profile.allergy.split(', ') if profile.allergy else [],
-        'selected_pathologies': profile.pathology.split(', ') if profile.pathology else [],
+        'selected_tastes': selected_tastes,
+        'selected_allergies': selected_allergies,
+        'selected_pathologies': selected_pathologies,
     }
 
     return render(request, 'registration/profile_edit.html', context)

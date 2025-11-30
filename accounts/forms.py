@@ -1,36 +1,39 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django import forms
-
-# Do Django không hỗ trợ sẵn form đăng ký nên phải tự cook
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(
-        required = True,
-        label = "Email",
-        widget=forms.EmailInput(attrs={'placeholder': 'example@gmail.com'})
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your email address'
+        })
+    )
+    
+    username = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Choose a username'
+        })
     )
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
-        labels = {
-            'username': 'Username',
-        }
-        help_texts = {
-            'username': 'Must have, 150 digits, only alphabet, numbers and @/./+/-/_',
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['password1'].label = "Password"
-        self.fields['password1'].help_text = (
-        '<ul>'
-        '<li>At least 8 digits</li>'
-        '</ul>'
-        )
-        self.fields['password2'].label = 'Confirm Password'
-        self.fields['password2'].help_text = 'Write your password again to confirm'
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('This email is already registered.')
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError('This username is already taken.')
+        return username
 
     def save(self, commit=True):
         user = super().save(commit=False)

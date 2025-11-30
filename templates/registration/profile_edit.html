@@ -1,105 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
-    <style>
-        .checkbox-group {
-            border: 1px solid #ccc;
-            padding: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile - Nomnomly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#901A1C",
+              "background-light": "#f8f7f6",
+              "background-dark": "#221a10",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .checkbox-group label {
+        .modal {
+            display: none;
+        }
+        .modal.active {
             display: flex;
-            align-items: center;
-            gap: 5px;
+        }
+        .checkbox-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        .checkbox-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .checkbox-grid::-webkit-scrollbar-thumb {
+            background-color: #e6e0db;
+            border-radius: 10px;
+            border: 2px solid #f8f7f6;
         }
     </style>
 </head>
-<body>
-    <h2>Edit Your Profile</h2>
-    <form method="post">
-        {% csrf_token %}
-        
-        <h3>Account Information</h3>
-        <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
-        <br><br>
-        
-        <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
-        <br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ user.email }}" required>
-        <br><br>
-        
-        <h3>Personal Information</h3>
-        <label for="date_of_birth">Date of Birth:</label>
-        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ profile.date_of_birth|date:'Y-m-d' }}" required>
-        <br><br>
-        
-        <label for="language">Preferred Language:</label>
-        <select id="language" name="language" required>
-            <option value="">-- Select Language --</option>
-            <option value="English" {% if profile.language == "English" %}selected{% endif %}>English</option>
-            <option value="Vietnamese" {% if profile.language == "Vietnamese" %}selected{% endif %}>Vietnamese</option>
-            <option value="Chinese" {% if profile.language == "Chinese" %}selected{% endif %}>Chinese</option>
-            <option value="Japanese" {% if profile.language == "Japanese" %}selected{% endif %}>Japanese</option>
-            <option value="Korean" {% if profile.language == "Korean" %}selected{% endif %}>Korean</option>
-            <option value="French" {% if profile.language == "French" %}selected{% endif %}>French</option>
-            <option value="Spanish" {% if profile.language == "Spanish" %}selected{% endif %}>Spanish</option>
-            <option value="Other" {% if profile.language == "Other" %}selected{% endif %}>Other</option>
-        </select>
-        <br><br>
-        
-        <h3>Food Preferences</h3>
-        <label>Food Taste Preferences:</label>
-        <div class="checkbox-group">
-            {% for taste in taste_choices %}
-            <label>
-                <input type="checkbox" name="taste" value="{{ taste }}" 
-                    {% if taste in selected_tastes %}checked{% endif %}>
-                {{ taste|title }}
-            </label>
-            {% endfor %}
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- TopNavBar Start -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#e6e1db] dark:border-background-dark/20 px-10 py-3 bg-white dark:bg-background-dark/30 sticky top-0 z-10">
+<div class="flex items-center gap-4 text-[#181511] dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.621 12 12 23.621.379 12 12 .379 23.621 12ZM6.121 10.5h11.758L12 4.621 6.121 10.5Z"></path></svg>
+</div>
+<h2 class="text-[#181511] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Nomnomly</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-[#181511] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Discover</a>
+<a class="text-[#181511] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Meal Plans</a>
+<a class="text-[#181511] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Favorites</a>
+<a class="text-[#181511] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Community</a>
+</div>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-background-dark text-[#181511] dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+<span class="material-symbols-outlined text-lg text-[#181511] dark:text-white">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwwbkzEvg4nSY_5LU0bI1SNC3rhUQ9PIZJkvGKnwH_BUn8PZ7lUOGbkQHw-dMgwjC57RvZWyymrjGQa551hq7vBsvuSULVlIPVwIR8rPel7Dy8cuPbz4GDVaK56HBEvIHtqXA-SIk-KOCiZIQK97mc30iAGAjqAVho98Iy4ELCSwGShzqZG2xJs3DSFM06E_3TCe3qGH9UrvnLSgA6olF_TcKeHKw2uyFgw02x6maw143T81jk_zLoEjvUUVKTT2FNUnlK0IWczYg");'></div>
+</div>
+</header>
+<!-- TopNavBar End -->
+<div class="px-4 sm:px-10 md:px-20 lg:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<!-- PageHeading Start -->
+<div class="flex flex-wrap justify-between gap-3 p-4">
+<p class="text-[#181511] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Edit Profile</p>
+</div>
+<!-- PageHeading End -->
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="flex items-center gap-2 rounded-lg bg-green-100 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-300 mx-4">
+            <span class="material-symbols-outlined text-base">check_circle</span>
+            <p>{{ message }}</p>
         </div>
-        <br>
-        
-        <label>Food Allergies:</label>
-        <div class="checkbox-group">
-            {% for allergy in allergy_choices %}
-            <label>
-                <input type="checkbox" name="allergy" value="{{ allergy }}"
-                    {% if allergy in selected_allergies %}checked{% endif %}>
-                {{ allergy|title }}
+    {% endfor %}
+{% endif %}
+
+<form method="POST" id="editForm">
+    {% csrf_token %}
+    <!-- Account Information Section -->
+    <div class="flex flex-col gap-4 mt-6">
+        <h3 class="text-[#181511] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 border-b border-[#e6e1db] dark:border-background-dark/20">Account Information</h3>
+        <div class="flex flex-col md:flex-row flex-wrap items-end gap-4 px-4 py-3">
+            <label class="flex flex-col min-w-40 flex-1">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">First Name</p>
+                <input name="first_name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#181511] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6e1db] dark:border-gray-700 bg-white dark:bg-background-dark h-14 placeholder:text-[#897961] dark:placeholder:text-gray-500 p-[15px] text-base font-normal leading-normal" value="{{ user.first_name }}"/>
             </label>
-            {% endfor %}
-        </div>
-        <br>
-        
-        <label>Medical Conditions:</label>
-        <div class="checkbox-group">
-            {% for pathology in pathology_choices %}
-            <label>
-                <input type="checkbox" name="pathology" value="{{ pathology }}"
-                    {% if pathology in selected_pathologies %}checked{% endif %}>
-                {{ pathology|title }}
+            <label class="flex flex-col min-w-40 flex-1">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Last Name</p>
+                <input name="last_name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#181511] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6e1db] dark:border-gray-700 bg-white dark:bg-background-dark h-14 placeholder:text-[#897961] dark:placeholder:text-gray-500 p-[15px] text-base font-normal leading-normal" value="{{ user.last_name }}"/>
             </label>
-            {% endfor %}
         </div>
-        <br>
+        <div class="flex flex-wrap items-end gap-4 px-4 py-3">
+            <label class="flex flex-col w-full">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Email</p>
+                <input name="email" type="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#181511] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6e1db] dark:border-gray-700 bg-white dark:bg-background-dark h-14 placeholder:text-[#897961] dark:placeholder:text-gray-500 p-[15px] text-base font-normal leading-normal" value="{{ user.email }}"/>
+            </label>
+        </div>
+    </div>
+    <!-- Personal Information Section -->
+    <div class="flex flex-col gap-4 mt-8">
+        <h3 class="text-[#181511] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 border-b border-[#e6e1db] dark:border-background-dark/20">Personal Information</h3>
+        <div class="flex flex-col md:flex-row flex-wrap items-end gap-4 px-4 py-3">
+            <label class="flex flex-col min-w-40 flex-1">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Date of Birth</p>
+                <input name="date_of_birth" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#181511] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6e1db] dark:border-gray-700 bg-white dark:bg-background-dark h-14 placeholder:text-[#897961] dark:placeholder:text-gray-500 p-[15px] text-base font-normal leading-normal" type="date" value="{{ profile.date_of_birth|date:'Y-m-d' }}"/>
+            </label>
+            <label class="flex flex-col min-w-40 flex-1">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Preferred Language</p>
+                <select name="language" class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#181511] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6e1db] dark:border-gray-700 bg-white dark:bg-background-dark h-14 placeholder:text-[#897961] dark:placeholder:text-gray-500 p-[15px] text-base font-normal leading-normal">
+                    <option {% if profile.language == 'English' %}selected{% endif %}>English</option>
+                    <option {% if profile.language == 'Vietnamese' %}selected{% endif %}>Vietnamese</option>
+                    <option {% if profile.language == 'Spanish' %}selected{% endif %}>Spanish</option>
+                    <option {% if profile.language == 'French' %}selected{% endif %}>French</option>
+                    <option {% if profile.language == 'Japan' %}selected{% endif %}>Japan</option>
+                    <option {% if profile.language == 'Thailand' %}selected{% endif %}>Thailand</option>
+                    <option {% if profile.language == 'China' %}selected{% endif %}>China</option> 
+                    <option {% if profile.language == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </label>
+        </div>
+    </div>
+    <!-- Food Preferences Section -->
+    <div class="flex flex-col gap-4 mt-8">
+        <h3 class="text-[#181511] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 border-b border-[#e6e1db] dark:border-background-dark/20">Food Preferences</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 py-3">
+            <!-- Food Taste -->
+            <div class="flex flex-col gap-2">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Food Taste</p>
+                <button type="button" onclick="openTasteModal()" class="flex items-center justify-between gap-3 p-4 rounded-lg border-2 border-primary bg-primary/5 hover:bg-primary/10 cursor-pointer transition-colors">
+                    <span class="text-[#181511] dark:text-white font-medium">Select Tastes</span>
+                    <span class="material-symbols-outlined text-primary">expand_more</span>
+                </button>
+                <div id="selectedTastesDisplay" class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ selected_tastes|length }} taste(s) selected
+                </div>
+                <!-- Hidden container for selected taste checkboxes -->
+                <div id="selectedTastesContainer" class="hidden"></div>
+            </div>
+            <!-- Allergies -->
+            <div class="flex flex-col gap-2">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Allergies</p>
+                <div class="checkbox-grid flex flex-col gap-3 max-h-[200px] overflow-y-auto pr-2">
+                    {% for allergy in allergy_choices %}
+                    <label class="flex items-center gap-3">
+                        <input name="allergy" value="{{ allergy }}" class="form-checkbox rounded text-primary focus:ring-primary/50" type="checkbox" {% if allergy in selected_allergies %}checked{% endif %}/>
+                        <span class="text-[#181511] dark:text-gray-300 capitalize">{{ allergy }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Medical Conditions -->
+            <div class="flex flex-col gap-2">
+                <p class="text-[#181511] dark:text-gray-300 text-base font-medium leading-normal pb-2">Medical Conditions</p>
+                <div class="checkbox-grid flex flex-col gap-3 max-h-[200px] overflow-y-auto pr-2">
+                    {% for pathology in pathology_choices %}
+                    <label class="flex items-center gap-3">
+                        <input name="pathology" value="{{ pathology }}" class="form-checkbox rounded text-primary focus:ring-primary/50" type="checkbox" {% if pathology in selected_pathologies %}checked{% endif %}/>
+                        <span class="text-[#181511] dark:text-gray-300 capitalize">{{ pathology }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Action Buttons -->
+    <div class="flex justify-end items-center gap-4 px-4 py-8 mt-8 border-t border-[#e6e1db] dark:border-background-dark/20">
+        <a href="{% url 'profile_detail' %}" class="flex items-center justify-center px-6 h-12 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Cancel</a>
+        <button type="submit" class="flex items-center justify-center px-6 h-12 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary/90 transition-colors">Save Changes</button>
+    </div>
+</form>
+
+<!-- Taste Modal -->
+<div id="tasteModal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm z-50 items-center justify-center p-4">
+    <div class="bg-background-light dark:bg-background-dark rounded-xl max-w-4xl w-full max-h-[80vh] overflow-hidden shadow-2xl">
+        <div class="sticky top-0 bg-background-light dark:bg-background-dark border-b border-[#e6e1db] dark:border-background-dark/20 p-6 flex items-center justify-between">
+            <h3 class="text-2xl font-bold text-[#181511] dark:text-white">Select Food Tastes</h3>
+            <button type="button" onclick="closeTasteModal()" class="text-gray-500 hover:text-[#181511] dark:hover:text-white">
+                <span class="material-symbols-outlined text-3xl">close</span>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto max-h-[calc(80vh-180px)]">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {% for taste in taste_choices %}
+                <label class="flex items-center gap-3 p-3 rounded-lg border border-[#e6e1db] dark:border-gray-700 cursor-pointer hover:bg-primary/10 transition-colors">
+                    <input value="{{ taste }}" class="form-checkbox rounded text-primary focus:ring-primary/50 taste-checkbox-temp" type="checkbox" {% if taste in selected_tastes %}checked{% endif %} onchange="updateSelectedTastes()"/>
+                    <span class="text-[#181511] dark:text-white text-sm capitalize">{{ taste }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="sticky bottom-0 bg-background-light dark:bg-background-dark border-t border-[#e6e1db] dark:border-background-dark/20 p-6 flex justify-end gap-4">
+            <button type="button" onclick="closeTasteModal()" class="px-6 py-3 rounded-lg border-2 border-[#e6e1db] dark:border-gray-700 text-[#181511] dark:text-white font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                Cancel
+            </button>
+            <button type="button" onclick="closeTasteModal()" class="px-6 py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition-colors">
+                Done
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTasteModal() {
+        document.getElementById('tasteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
         
-        <button type="submit">Save Changes</button>
-        <a href="{% url 'profile_detail' %}">
-            <button type="button">Cancel</button>
-        </a>
-    </form>
-</body>
-</html>
+        // Sync temp checkboxes with hidden form checkboxes on open
+        const hiddenContainer = document.getElementById('selectedTastesContainer');
+        const hiddenCheckboxes = hiddenContainer.querySelectorAll('input[name="taste"]');
+        const selectedValues = Array.from(hiddenCheckboxes).map(cb => cb.value);
+        
+        if (selectedValues.length > 0) {
+            document.querySelectorAll('.taste-checkbox-temp').forEach(checkbox => {
+                checkbox.checked = selectedValues.includes(checkbox.value);
+            });
+        }
+    }
+
+    function closeTasteModal() {
+        // Sync selected tastes to hidden form inputs
+        const tempCheckboxes = document.querySelectorAll('.taste-checkbox-temp:checked');
+        const hiddenContainer = document.getElementById('selectedTastesContainer');
+        
+        // Clear existing hidden checkboxes
+        hiddenContainer.innerHTML = '';
+        
+        // Create hidden checkboxes for each selected taste
+        tempCheckboxes.forEach(checkbox => {
+            const hiddenCheckbox = document.createElement('input');
+            hiddenCheckbox.type = 'checkbox';
+            hiddenCheckbox.name = 'taste';
+            hiddenCheckbox.value = checkbox.value;
+            hiddenCheckbox.checked = true;
+            hiddenContainer.appendChild(hiddenCheckbox);
+        });
+        
+        updateSelectedTastes();
+        document.getElementById('tasteModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function updateSelectedTastes() {
+        const checkboxes = document.querySelectorAll('.taste-checkbox-temp:checked');
+        const display = document.getElementById('selectedTastesDisplay');
+        display.textContent = `${checkboxes.length} taste(s) selected`;
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('tasteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeTasteModal();
+        }
+    });
+
+    // Initialize hidden checkboxes on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const hiddenContainer = document.getElementById('selectedTastesContainer');
+        {% for taste in selected_tastes %}
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'taste';
+        checkbox.value = '{{ taste }}';
+        checkbox.checked = true;
+        hiddenContainer.appendChild(checkbox);
+        {% endfor %}
+        updateSelectedTastes();
+    });
+</script>
+</body></html>

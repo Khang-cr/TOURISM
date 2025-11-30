@@ -1,44 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Details</title>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Detail - Nomnomly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#901A1C",
+              "secondary": "#4CAF50",
+              "background-light": "#FDFBF5",
+              "background-dark": "#221a10",
+              "text-primary": "#333333",
+              "text-secondary": "#757575",
+              "danger": "#D32F2F"
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
 </head>
-<body>
-    <h2>Profile Information for {{ user.username }}</h2>
-    
-    <h3>Account Information</h3>
-    <p><strong>Username:</strong> {{ username }}</p>
-    <p><strong>Email:</strong> {{ email }}</p>
-    <p><strong>First Name:</strong> {{ first_name }}</p>
-    <p><strong>Last Name:</strong> {{ last_name }}</p>
-    <p><strong>Date Joined:</strong> {{ date_joined }}</p>
-    
-    {% if profile %}
-    <h3>Personal Information</h3>
-    <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F j, Y" }}</p>
-    <p><strong>Age:</strong> {{ profile.age }} years old</p>
-    <p><strong>Preferred Language:</strong> {{ profile.language }}</p>
-    
-    <h3>Food Preferences</h3>
-    <p><strong>Food Taste:</strong> {{ profile.taste }}</p>
-    <p><strong>Food Allergies:</strong> {{ profile.allergy }}</p>
-    <p><strong>Medical Conditions:</strong> {{ profile.pathology }}</p>
-    {% else %}
-    <p><em>No additional information available.</em></p>
-    {% endif %}
-        
-    <br>
-    <a href="{% url 'profile_edit' %}">
-        <button type="button">Edit Profile</button>
-    </a>
-    <a href="{% url 'homepage' %}">
-        <button type="button">Homepage</button>
-    </a>
-    <form method="post" action="{% url 'logout' %}" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit">Log out</button>
-    </form>
-</body>
-</html>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-black/10 px-4 sm:px-10 py-4 dark:border-white/10">
+<div class="flex items-center gap-4 text-text-primary dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_535)">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_535">
+<rect fill="white" height="48" width="48"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">Nomnomly</h2>
+</div>
+<div class="flex flex-1 justify-end items-center gap-4 sm:gap-6">
+<nav class="hidden sm:flex items-center gap-6">
+<a class="text-text-primary dark:text-white text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors" href="#">Discover</a>
+<a class="text-text-primary dark:text-white text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors" href="#">My Meals</a>
+<a class="text-text-primary dark:text-white text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary transition-colors" href="#">Favorites</a>
+</nav>
+<button class="flex items-center justify-center gap-2 min-w-[84px] cursor-pointer overflow-hidden rounded-full h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined text-base">add</span>
+<span class="truncate hidden sm:inline">Add Recipe</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQwdCHcEtTmOqQRo9s1McyA8sjAneVoLqWM5yZ15lJPsvatVnQ0VHFnNmDVlGpwmtLJLfBdgNAoM1786-xg9P8ig6ekmURA2UayEtZr2f_huJiaGHOZcMHMROH_DUSBN0Db9i1aJyF4UlbybRkOpSYpFo0xry5f1HJcuXL_khZr1tBMzPTxJ_7h_E8tFBokI6_HLXQZ_Q_7TYIIqLmlAMg8z9FZcMwgmRMYyk4qIRuq8Dw8YyOGyWjEwN9SsHbjeDj-vupgb5M-L0");'></div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8 px-4 sm:px-6 md:px-8">
+<div class="layout-content-container flex flex-col w-full max-w-4xl flex-1 gap-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-text-primary dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Profile</h1>
+<p class="text-text-secondary dark:text-gray-400 text-base font-normal leading-normal">View and manage your account details and food preferences.</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="flex items-center gap-2 rounded-lg bg-green-100 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            <span class="material-symbols-outlined text-base">check_circle</span>
+            <p>{{ message }}</p>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="flex flex-col items-center gap-6 @container">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 bg-primary/20 flex items-center justify-center">
+    <span class="text-primary text-5xl font-black">{{ user.first_name.0|default:user.username.0|upper }}</span>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-3 w-full justify-center">
+<a href="{% url 'profile_edit' %}" class="flex min-w-[84px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors">
+    <span class="truncate">Edit Profile</span>
+</a>
+<a href="{% url 'homepage' %}" class="flex min-w-[84px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent text-primary border border-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/10 transition-colors">
+    <span class="truncate">Homepage</span>
+</a>
+<a href="{% url 'login' %}" class="flex min-w-[84px] w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent text-danger text-sm font-bold leading-normal tracking-[0.015em] hover:bg-danger/10 transition-colors">
+    <span class="truncate">Log out</span>
+</a>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Account Information Card -->
+<div class="flex flex-col rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] bg-white dark:bg-background-dark dark:border dark:border-white/10 lg:col-span-1 p-6 gap-4">
+<h3 class="text-text-primary dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Account Information</h3>
+<div class="flex flex-col divide-y divide-black/10 dark:divide-white/10">
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Username</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right">{{ username }}</p>
+</div>
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Email</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right break-all">{{ email }}</p>
+</div>
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">First Name</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right">{{ first_name|default:"Not set" }}</p>
+</div>
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Last Name</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right">{{ last_name|default:"Not set" }}</p>
+</div>
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Date Joined</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right">{{ date_joined|date:"M d, Y" }}</p>
+</div>
+</div>
+</div>
+<!-- Personal Information & Food Preferences Cards Wrapper -->
+<div class="flex flex-col gap-6 lg:col-span-2">
+<!-- Personal Information Card -->
+<div class="flex flex-col rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] bg-white dark:bg-background-dark dark:border dark:border-white/10 p-6 gap-4">
+<h3 class="text-text-primary dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Personal Information</h3>
+{% if profile %}
+<div class="flex flex-col divide-y divide-black/10 dark:divide-white/10">
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Date of Birth</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right">{{ profile.date_of_birth|date:"F d, Y"|default:"Not set" }}</p>
+</div>
+<div class="flex justify-between gap-x-6 py-3">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Preferred Language</p>
+<p class="text-text-primary dark:text-white text-sm font-medium leading-normal text-right">{{ profile.language|default:"Not set" }}</p>
+</div>
+</div>
+{% else %}
+<p class="text-text-secondary dark:text-gray-400 text-sm">Please complete your profile information.</p>
+<a href="{% url 'collect_data' %}" class="text-primary hover:underline text-sm font-medium">Complete Profile →</a>
+{% endif %}
+</div>
+<!-- Food Preferences Card -->
+<div class="flex flex-col rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] bg-white dark:bg-background-dark dark:border dark:border-white/10 p-6 gap-4">
+<h3 class="text-text-primary dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Food Preferences</h3>
+{% if profile %}
+<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-2">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Food Taste</p>
+{% if tastes %}
+<div class="flex flex-wrap gap-2">
+    {% for taste in tastes %}
+    <span class="rounded-full bg-secondary/10 text-secondary px-3 py-1 text-xs font-semibold capitalize">{{ taste }}</span>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-text-secondary dark:text-gray-400 text-sm italic">None selected</p>
+{% endif %}
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Allergies</p>
+{% if allergies %}
+<div class="flex flex-wrap gap-2">
+    {% for allergy in allergies %}
+    <span class="rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 px-3 py-1 text-xs font-semibold capitalize">{{ allergy }}</span>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-text-secondary dark:text-gray-400 text-sm italic">None</p>
+{% endif %}
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-text-secondary dark:text-gray-400 text-sm font-normal leading-normal">Medical Conditions</p>
+{% if pathologies %}
+<div class="flex flex-wrap gap-2">
+    {% for pathology in pathologies %}
+    <span class="rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 px-3 py-1 text-xs font-semibold capitalize">{{ pathology }}</span>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-text-secondary dark:text-gray-400 text-sm italic">None</p>
+{% endif %}
+</div>
+</div>
+{% else %}
+<p class="text-text-secondary dark:text-gray-400 text-sm">No food preferences set yet.</p>
+<a href="{% url 'collect_data' %}" class="text-primary hover:underline text-sm font-medium">Set Preferences →</a>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

@@ -1,37 +1,22 @@
+# Database
+*.sqlite3
+db.sqlite3
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
-*.pyo
-*.pyd
-.Python
-env/
+
+# Virtual Environment
 venv/
+env/
 ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
 # Django
 *.log
-db.sqlite3
-db.sqlite3-journal
-/media
-/staticfiles
-/static
+media/
+staticfiles/
 
 # IDE
 .vscode/
@@ -44,9 +29,14 @@ db.sqlite3-journal
 .env
 *.env
 
-# User data - KHÔNG push dữ liệu user lên GitHub
-user_data.csv
-
 # OS
 .DS_Store
 Thumbs.db
+
+# Migrations (optional - nếu muốn giữ thì comment out)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Ignore specific folders
+BACKEND/
+AI/
