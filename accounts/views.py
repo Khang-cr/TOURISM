@@ -110,37 +110,6 @@ def profile_detail_view(request):
 
     return render(request, 'registration/profile_detail.html', context)
 
-@login_required
-# User hien tai
-def ProfileView(request):
-    user = request.user
-
-    username = user.username
-    email = user.email
-    first_name = user.first_name
-    last_name = user.last_name
-    is_staff = user.is_staff
-    date_joined = user.date_joined
-
-    context = {
-        'user': user,
-        'username': username,
-        'email': email
-    }
-
-    return render(request, 'profile.html', context)
-
-# tat ca user
-from django.contrib.auth.models import User
-
-def user_list_view(request):
-    all_users = User.objects.all()
-    
-    active_users = User.objects.filter(is_active=True)
-
-    specific_user = User.objects.get(username='tên_user')
-    
-    return render(request, 'user_list.html', {'users': all_users})
 
 @login_required
 def profile_edit_view(request):
@@ -267,7 +236,7 @@ def reset_password_view(request):
         if password1 != password2:
             messages.error(request, 'Passwords do not match!')
         elif len(password1) < 8:
-            messages.error(request, 'Pass word must be at least 8 characters!')
+            messages.error(request, 'Password must be at least 8 characters!')
         else:
             try:
                 user = User.objects.get(id = user_id)

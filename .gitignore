@@ -33,10 +33,6 @@ staticfiles/
 .DS_Store
 Thumbs.db
 
-# Migrations (optional - nếu muốn giữ thì comment out)
-# */migrations/*.py
-# !*/migrations/__init__.py
-
 # Ignore specific folders
 BACKEND/
 AI/
